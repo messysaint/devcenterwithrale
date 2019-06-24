@@ -1,0 +1,28 @@
+/*
+ * test.java
+ *
+ * Created on June 30, 2003, 10:13 PM
+ */
+
+package com.likha.codeParser;
+
+/**
+ *
+ * @author  test1
+ */
+public class test {
+    
+    /** Creates a new instance of test */
+    public test() {
+    }
+    
+    /**
+     * @param args the command line arguments
+     */
+    public static void main( String[] args ) {
+        identifierParser ip = new identifierParser();
+        
+        System.out.println( ip.getIdentifierName( "hello there mister" ) );
+    }
+    
+}

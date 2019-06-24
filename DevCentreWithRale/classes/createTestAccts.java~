@@ -1,0 +1,68 @@
+/*
+ * createTestAccts.java
+ *
+ * Created on November 11, 2002, 4:04 PM
+ */
+
+import java.io.*;
+import java.util.*;
+
+/**
+ *
+ * @author  BMutia
+ */
+public class createTestAccts {
+        
+    String rdn = new String();
+    String objectclass_top = new String();
+    String objectclass_inetOrgPerson = new String();
+    String objectclass_psExtPerson = new String();
+    String uid = new String();    
+    String cn = new String();
+    String givenName = new String();
+    String sn = new String();
+    String psExtCRMDisabled = new String();
+    String psExtUF = new String();
+    String userPassword = new String();
+    String psExtDisabled = new String();
+    String psExtRole = new String();
+    String mail = new String();
+    String psExtDefaultCo = new String();
+    String psExtCRMAdmin = new String();
+    
+        
+    /** Creates a new instance of createTestAccts */
+    public createTestAccts() {
+    }
+    
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        
+        try {
+            FileWriter fw = new FileWriter("C:\\Temp\\test.ldif", false);
+            BufferedWriter br = new BufferedWriter(fw);
+            PrintWriter pw = new PrintWriter(br);
+            
+            long date = new Date().getTime();
+            Long longDate = new Long(date);
+            String dateString = longDate.toString();
+            
+            pw.println(dateString);
+            
+            pw.flush();
+            pw.close();
+            br.close();
+            fw.close();
+            
+        } catch (IOException io) {
+            System.out.println( "FILEWRITER EXCEPTION " + io.getMessage() );
+        } catch (Exception e) {
+            System.out.println(" FILEWRITER GENERIC EXCEPTION " + e.getMessage());
+        }
+        
+        System.out.println( "Done." );
+    }
+    
+}

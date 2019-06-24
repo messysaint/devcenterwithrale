@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE attributes PUBLIC "-//NetBeans//DTD DefaultAttributes 1.0//EN" "http://www.netbeans.org/dtds/attributes-1_0.dtd">
+<attributes version="1.0">
+    <fileobject name="DESedeKeyGenerator.java">
+        <attr name="class_dependency_java.io.Serializable" stringvalue="DESedeKeyGenerator"/>
+        <attr name="class_dependency_java.io.FilterOutputStream" stringvalue="DESedeKeyGenerator.OutputStream"/>
+        <attr name="class_dependency_java.io.FilterInputStream" stringvalue="DESedeKeyGenerator.InputStream"/>
+        <attr name="class_dependency_java.lang.Object" stringvalue="DESedeKeyGenerator"/>
+    </fileobject>
+    <fileobject name="DESedeEncryptor.java">
+        <attr name="class_dependency_java.io.Serializable" stringvalue="DESedeEncryptor"/>
+        <attr name="class_dependency_java.io.FilterOutputStream" stringvalue="DESedeEncryptor.OutputStream"/>
+        <attr name="class_dependency_java.io.FilterInputStream" stringvalue="DESedeEncryptor.InputStream"/>
+        <attr name="class_dependency_java.lang.Object" stringvalue="DESedeEncryptor"/>
+    </fileobject>
+</attributes>

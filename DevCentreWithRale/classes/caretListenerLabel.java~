@@ -1,0 +1,52 @@
+/*
+ * caretListenerLabel.java
+ *
+ * Created on March 17, 2003, 8:59 PM
+ */
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.text.*;
+import javax.swing.event.*;
+
+
+/**
+ *
+ * @author  test1
+ */
+//This listens for and reports caret movements.
+public class CaretListenerLabel extends JLabel implements CaretListener {
+    
+    String newline = "\n";
+    JTextPane textPane;
+    
+    public CaretListenerLabel(String label, JTextPane tPane) {
+        super(label);
+        textPane = tPane;
+    }
+    
+    public void caretUpdate(CaretEvent e) {
+        //Get the location in the text.
+        int dot = e.getDot();
+        int mark = e.getMark();
+        if (dot == mark) {  // no selection
+            try {
+                Rectangle caretCoords = textPane.modelToView(dot);
+                //Convert it to view coordinates.
+                setText("caret: text position: " + dot
+                + ", view location = ["
+                + caretCoords.x + ", "
+                + caretCoords.y + "]"
+                + newline);
+            } catch (BadLocationException ble) {
+                setText("caret: text position: " + dot + newline);
+            }
+        } else if (dot < mark) {
+            setText("selection from: " + dot
+            + " to " + mark + newline);
+        } else {
+            setText("selection from: " + mark
+            + " to " + dot + newline);
+        }
+    }
+    
+}

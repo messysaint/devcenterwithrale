@@ -1,0 +1,75 @@
+package com.likha.codeCompletion;
+
+/*
+ * ZIPme.java
+ *
+ * Created on June 28, 2003, 11:27 PM
+ */
+
+import java.util.zip.ZipFile;
+import java.util.Enumeration;
+
+import org.apache.bcel.classfile.*;
+import java.io.*;
+
+/**
+ *
+ * @author  test1
+ */
+public class packageManager {
+    
+    static String jarFile = "C:\\j2sdk1.4.1_01\\jre\\lib\\rt.jar";                       
+    
+    /** Creates a new instance of ZIPme */
+    public packageManager() {
+    }
+    
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) throws java.io.IOException {
+                
+        ZipFile lib = new ZipFile( jarFile );   
+        Enumeration enum = lib.entries();
+        
+        String cls = "";
+        int ctr = 0;
+        
+        while( enum.hasMoreElements() ) {
+            
+            cls = enum.nextElement().toString();
+            
+            if( cls.endsWith( ".class" ) ) {
+                //cls = cls.substring( 0 , cls.indexOf( ".class" ) ).replace( '/', '.');
+                System.out.println( cls );
+                ctr++;
+            }
+            
+        }
+        
+        System.out.println( ctr + "" );
+        
+        getClassInfo(); // list class attributes
+    }
+    
+    
+    public static void getClassInfo() throws IOException {
+                          
+        ClassParser cp = new ClassParser(jarFile, "java/lang/String.class");
+        
+        JavaClass jc = cp.parse();
+        
+        Field[] fld = jc.getFields();
+        Method[] mthd = jc.getMethods();
+        
+        for( int i = 0 ; i < fld.length ; i++ ) {
+            System.out.println( "Field: " + fld[i].toString() );
+        }
+        
+        for( int i = 0 ; i < mthd.length ; i++ ) {
+            System.out.println( "Method: " + mthd[i].toString() );
+        }
+        
+    }
+    
+}

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE attributes PUBLIC "-//NetBeans//DTD DefaultAttributes 1.0//EN" "http://www.netbeans.org/dtds/attributes-1_0.dtd">
+<attributes version="1.0">
+    <fileobject name="CodeEditorPaneHtml.java">
+        <attr name="class_dependency_java.awt.event.ActionListener" stringvalue="CodeEditorPaneHtml.rightClickPopUp"/>
+        <attr name="class_dependency_java.awt.event.ItemListener" stringvalue="CodeEditorPaneHtml.rightClickPopUp"/>
+        <attr name="class_dependency_java.awt.event.KeyListener" stringvalue="CodeEditorPaneHtml"/>
+        <attr name="class_dependency_java.awt.event.MouseListener" stringvalue="CodeEditorPaneHtml"/>
+        <attr name="class_dependency_java.lang.Runnable" stringvalue="CodeEditorPaneHtml"/>
+        <attr name="class_dependency_javax.swing.JEditorPane" stringvalue="CodeEditorPaneHtml"/>
+        <attr name="class_dependency_javax.swing.JMenuItem" stringvalue="CodeEditorPaneHtml.rightClickPopUp.popUpMenu"/>
+        <attr name="class_dependency_javax.swing.JPopupMenu" stringvalue="CodeEditorPaneHtml.rightClickPopUp"/>
+    </fileobject>
+    <fileobject name="CodeEditorPaneJava.java">
+        <attr name="class_dependency_java.awt.event.ActionListener" stringvalue="CodeEditorPaneJava.rightClickPopUp"/>
+        <attr name="class_dependency_java.awt.event.ItemListener" stringvalue="CodeEditorPaneJava.rightClickPopUp"/>
+        <attr name="class_dependency_javax.swing.JMenuItem" stringvalue="CodeEditorPaneJava.rightClickPopUp.popUpMenu"/>
+        <attr name="class_dependency_javax.swing.JPopupMenu" stringvalue="CodeEditorPaneJava.rightClickPopUp"/>
+    </fileobject>
+    <fileobject name="JSPPage1.jsp">
+        <attr name="NetBeansAttrExecutor" serialvalue="aced00057372001e6f72672e6f70656e6964652e53657276696365547970652448616e646c6564612acc871b81080300024c0009636c6173734e616d657400124c6a6176612f6c616e672f537472696e673b4c00046e616d6571007e0001787074000d4a535020457865637574696f6e7400336f72672e6e65746265616e732e6d6f64756c65732e7765622e636f72652e657865637574696f6e2e4a73704578656375746f7278"/>
+    </fileobject>
+    <fileobject name="archiver.jarContent">
+        <attr name="readOnlyAttrs" boolvalue="false"/>
+    </fileobject>
+    <fileobject name="java">
+        <attr name="org.netbeans.modules.text.IsTextFile" boolvalue="true"/>
+    </fileobject>
+    <fileobject name="mainForm.java">
+        <attr name="class_dependency_java.io.FilenameFilter" stringvalue="mainForm.filter"/>
+        <attr name="class_dependency_java.lang.Object" stringvalue="mainForm.filter"/>
+        <attr name="class_dependency_javax.swing.JFrame" stringvalue="mainForm"/>
+    </fileobject>
+    <fileobject name="projectConnectionSettings.java">
+        <attr name="class_dependency_java.beans.PropertyChangeListener" stringvalue="projectConnectionSettings.FilePreviewer"/>
+        <attr name="class_dependency_javax.swing.JComponent" stringvalue="projectConnectionSettings.FilePreviewer"/>
+        <attr name="class_dependency_javax.swing.JDialog" stringvalue="projectConnectionSettings"/>
+    </fileobject>
+    <fileobject name="remoteGetServerXml.java">
+        <attr name="class_dependency_javax.swing.JDialog" stringvalue="remoteGetServerXml"/>
+    </fileobject>
+    <fileobject name="sourceJAVAEditorIF.java">
+        <attr name="class_dependency_java.io.DataOutputStream" stringvalue="sourceJAVAEditorIF.outFile"/>
+        <attr name="class_dependency_java.io.FilenameFilter" stringvalue="sourceJAVAEditorIF.filter"/>
+        <attr name="class_dependency_java.lang.Object" stringvalue="sourceJAVAEditorIF.filter"/>
+        <attr name="class_dependency_javax.swing.JInternalFrame" stringvalue="sourceJAVAEditorIF"/>
+    </fileobject>
+    <fileobject name="treePopUp.java">
+        <attr name="class_dependency_javax.swing.JMenuItem" stringvalue="treePopUp.popUpMenu"/>
+    </fileobject>
+</attributes>

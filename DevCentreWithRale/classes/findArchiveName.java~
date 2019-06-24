@@ -1,0 +1,95 @@
+/*
+ * weblogReader.java
+ *
+ * Created on October 24, 2000, 3:14 PM
+ */
+
+import java.io.*;
+import java.util.*;
+
+/**
+ *
+ * @author  C1BMUTIA
+ * @version
+ */
+public class findArchiveName extends Object {
+    
+    DataInputStream in;
+    String logFile;
+    
+    // class constructor
+    public findArchiveName( String fileName ) {
+        
+        logFile = fileName;
+        
+        try {
+            in = new DataInputStream( new BufferedInputStream( new FileInputStream( fileName )));            
+        } catch( IOException e) {
+            System.out.println("Error opening: " + fileName);
+        }
+        
+    }
+    
+    
+    // read data
+    public String getArchiveName() {
+                       
+        String s = new String();
+        String rvalue = new String();
+        
+        try {
+            while( (s = in.readLine())!= null ) {
+                if( s.indexOf( "warfile" ) != -1 ) {                    
+                    rvalue = s;
+                    break;
+                } 
+            }
+            
+            try {
+                in.close();
+            } catch( IOException e ){
+            }
+        } catch( IOException e){            
+        }
+        
+        rvalue.in
+        rvalue = rvalue.substring( rvalue.indexOf( '\"'), rvalue.length() );
+        return rvalue;
+        
+    }
+    
+    
+    // inner class
+    class outFile extends DataOutputStream {
+        
+        public outFile( String filename ) throws IOException {
+            super( new BufferedOutputStream( new FileOutputStream( filename ) ) );
+        }
+        
+        public outFile(File file) throws IOException {
+            this(file.getPath());
+        }
+        
+    }
+    
+    
+    // inner class
+    class filter extends Object implements FilenameFilter {
+        
+        String afn;
+        
+        public filter( String afn ) {
+            this.afn = afn;
+        }
+        
+        public boolean accept(File dir, String name) {
+            // Strip path information:
+            String f = new File(name).getName();
+            return f.indexOf(afn) != -1;
+        }
+        
+    }
+    
+    
+    
+}

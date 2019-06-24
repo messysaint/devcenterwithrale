@@ -1,0 +1,116 @@
+/*
+ * weblogReader.java
+ *
+ * Created on October 24, 2000, 3:14 PM
+ */
+
+import java.io.*;
+import java.util.*;
+
+/**
+ *
+ * @author  C1BMUTIA
+ * @version
+ */
+public class weblogReader extends Object {
+    
+    DataInputStream in;
+    
+    String logFile = new String();
+    
+    String bakFile = new String();
+    
+    /** Creates new weblogReader */
+    public weblogReader( String fileName ) {
+        
+        logFile = fileName;
+        
+        bakFile = fileName + ".bak";
+        
+        try {
+            in = new DataInputStream( new BufferedInputStream( new FileInputStream( fileName )));
+        } catch( IOException e) {
+            System.out.println("Error opening: " + fileName);
+        }
+        
+    }
+    
+    
+    // read data
+    private int readData() {
+        
+        int lctr = 0;
+        String s = new String();
+        //outFile out;
+        
+        try {
+            //out = new outFile( bakFile );
+            //try {
+            while( (s = in.readLine())!= null ) {
+                //out.writeBytes( s + '\n' );
+                if( s.indexOf( "AuthAccept" ) != -1 ) {
+                    lctr++;
+                }
+            }
+            //} catch( IOException e) {
+            //    System.out.println("Error opening file");
+            //}
+            
+            try {
+                in.close();
+            } catch( IOException e ){}
+            //out.close();
+            System.out.println( "OK");
+        } catch( IOException e){
+            System.out.println( "Error creating backup file" );
+        }
+        
+        return lctr;
+        
+    }
+    
+    
+    // inner class
+    class outFile extends DataOutputStream {
+        
+        public outFile(String filename) throws IOException {
+            super( new BufferedOutputStream( new FileOutputStream(filename)));
+        }
+        
+        public outFile(File file) throws IOException {
+            this(file.getPath());
+        }
+        
+    }
+    
+    
+    // inner class
+    class filter extends Object implements FilenameFilter {
+        
+        String afn;
+        
+        public filter( String afn ) {
+            this.afn = afn;
+        }
+        
+        public boolean accept(File dir, String name) {
+            // Strip path information:
+            String f = new File(name).getName();
+            return f.indexOf(afn) != -1;
+        }
+        
+    }
+    
+    
+    // start here    
+    public static void main(String args[]) {
+        
+        weblogReader wlr = new weblogReader( args[0] );
+        
+        int occurence = wlr.readData();
+        
+        System.out.println( "Occurrences: " + occurence );
+        
+    }
+    
+}

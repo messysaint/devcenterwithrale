@@ -1,0 +1,19 @@
+/*
+ * javaIdentifierParser.java
+ *
+ * Created on June 30, 2003, 9:55 PM
+ */
+
+package com.likha.codeParser;
+
+/**
+ *
+ * @author  test1
+ */
+public class javaIdentifierParser {
+    
+    /** Creates a new instance of javaIdentifierParser */
+    public javaIdentifierParser() {
+    }
+    
+}

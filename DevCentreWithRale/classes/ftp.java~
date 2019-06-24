@@ -1,0 +1,170 @@
+/***
+ * $RCSfile: ftp.java,v $ $Revision: 1.1.1.1 $ $Date: 2001/11/30 03:19:32 $
+ *
+ * NetComponents Internet Protocol Library
+ * Copyright (C) 1997-2002  Daniel F. Savarese
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library in the LICENSE file; if not, write
+ * to the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+ * Boston, MA  02111-1307  USA
+ ***/
+
+import java.io.*;
+
+import com.oroinc.net.ftp.*;
+
+/***
+ * This is an example program demonstrating how to use the FTPClient class.
+ * This program connects to an FTP server and retrieves the specified
+ * file.  If the -s flag is used, it stores the local file at the FTP server.
+ * Just so you can see what's happening, all reply strings are printed.
+ * If the -b flag is used, a binary transfer is assumed (default is ASCII).
+ * <p>
+ * Usage: ftp [-s] [-b] <hostname> <username> <password> <remote file> <local file>
+ * <p>
+ ***/
+public final class ftp implements Runnable {
+    
+    public static final String USAGE = "";
+    Thread thread;
+    String server;
+    String username;
+    String password;
+    String remote;
+    String local;
+    FTPClient ftp;
+    
+    public static void main(String[] args ) {
+        
+        //ftp client = new ftp( );
+        ftp client = new ftp( args[0] , args[1] , args[2] , args[3] , args[4] );
+    }
+    
+    public ftp( String pserver,  String pusername, String ppassword, String premote, String plocal ) {
+        
+        server   = pserver;
+        username = pusername;
+        password = ppassword;
+        remote   = premote;
+        local    = plocal;
+        
+        //System.out.println( pserver + " " + pusername + " " + ppassword + " " + premote +                           " " + plocal );
+        
+        thread = new Thread(this);
+        thread.start();
+        
+    }
+    
+    private void sendFile() throws InterruptedException {
+        
+        int base = 0;
+        boolean storeFile = true;
+        boolean binaryTransfer = true;
+        boolean error = false;
+        
+        
+        ftp = new FTPClient();
+        ftp.addProtocolCommandListener(new PrintCommandListener( new PrintWriter(System.out)));
+        
+        try {
+            int reply;
+            ftp.connect(server);
+            System.out.println("Connected to " + server + ".");
+            thread.sleep( 1000 );
+            // After connection attempt, you should check the reply code to verify
+            // success.
+            reply = ftp.getReplyCode();
+            
+            if(!FTPReply.isPositiveCompletion(reply)) {
+                ftp.disconnect();
+                System.err.println("FTP server refused connection.");
+                System.exit(1);
+            } else {
+                __main:
+                    try {
+                        if(!ftp.login(username, password)) {
+                            ftp.logout();
+                            error = true;
+                            break __main;
+                        }
+                        
+                        System.out.println("Remote system is " + ftp.getSystemName());
+                        
+                        if(binaryTransfer) {
+                            ftp.setFileType(FTP.BINARY_FILE_TYPE);
+                            thread.sleep( 1000 );
+                        }
+                            
+                        
+                        if(storeFile) {
+                            InputStream input;                            
+                            input = new FileInputStream(local);
+                            ftp.storeFile(remote, input);
+                            thread.sleep( 1000 );
+                        } else {
+                            OutputStream output;
+                            
+                            output = new FileOutputStream(local);
+                            ftp.retrieveFile(remote, output);
+                        }
+                        
+                        ftp.logout();
+                        thread.sleep( 1000 );
+                    } catch(FTPConnectionClosedException e) {
+                        error = true;
+                        System.err.println("Server closed connection.");
+                        e.printStackTrace();
+                    } catch(IOException e) {
+                        error = true;
+                        e.printStackTrace();
+                    } finally {
+                        if(ftp.isConnected()) {
+                            try {
+                                ftp.disconnect();
+                            } catch(IOException f) {
+                                // do nothing
+                            }
+                        }
+                    }
+                    
+                    System.exit(error ? 1 : 0);
+            }
+        } catch(IOException e) {
+            if(ftp.isConnected()) {
+                try {
+                    ftp.disconnect();
+                } catch(IOException f) {
+                    // do nothing
+                }
+            }
+            System.err.println("Could not connect to server.");
+            e.printStackTrace();
+            System.exit(1);
+        }
+        
+        
+    }
+    
+    public void run() {
+        try {
+            sendFile();
+        } catch( InterruptedException ie ) {
+        }
+        
+    }
+    
+    // end main
+    
+}
+

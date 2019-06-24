@@ -1,0 +1,273 @@
+package com.likha.codeCompletion;
+
+/*
+ * ZIPme.java
+ *
+ * Created on June 28, 2003, 11:27 PM
+ */
+
+import java.util.zip.ZipFile;
+import java.util.*;
+
+import org.apache.bcel.classfile.*;
+import java.io.*;
+
+/**
+ *
+ * @author  test1
+ */
+public class libraryManager {
+    
+    static private Vector libraryCollection = new Vector();
+    
+    static private Vector classesCollection = new Vector();
+        
+    static private ZipFile zipLib;
+    
+    //static String jarFile = "C:\\j2sdk1.4.1_01\\jre\\lib\\rt.jar";                       
+    
+    /** Creates a new instance of ZIPme */
+    public libraryManager() {
+    }
+    
+    public static boolean addLibrary( String jarFile ) throws java.io.IOException {
+     
+        boolean rvalue = false;
+        
+        if( !isLibraryIncluded( jarFile ) ) {
+            libraryCollection.add( jarFile );
+            zipLib = new ZipFile( jarFile );   
+            addLibraryClasses( zipLib );
+            rvalue = true;
+        }
+        
+        return rvalue;
+        
+    }
+    
+    public static boolean removeLibrary( String jarFile ) throws java.io.IOException {
+        
+        boolean rvalue = false;
+        
+        if( isLibraryIncluded( jarFile ) ) {
+            libraryCollection.remove( jarFile );
+            zipLib = new ZipFile( jarFile );   
+            removeLibraryClasses( zipLib );
+            rvalue = true;
+        }
+        
+        return rvalue;
+        
+    }
+    
+    
+    public static boolean isLibraryIncluded( String jarFile ) {
+        return libraryCollection.contains( jarFile );
+    }
+    
+    
+    public static String[] listLibraries() {
+        
+        String[] list = new String[ libraryCollection.size() ];         
+        Iterator iter = libraryCollection.iterator();        
+        
+        for( int i = 0 ; iter.hasNext() ; i++ ) {
+            list[i] = (String) iter.next();
+        }
+        
+        return list;        
+    }
+    
+    
+    public static String[] listClasses() {
+        
+        String[] list = new String[ classesCollection.size() ];         
+        Iterator iter = classesCollection.iterator();        
+        
+        for( int i = 0 ; iter.hasNext() ; i++ ) {
+            list[i] = (String) iter.next();
+        }
+        
+        return list;        
+    }
+    
+    public static int getLibraryCollectionSize() {
+        return libraryCollection.size();
+    }
+    
+    public static int getClassesCollectionSize() {
+        return classesCollection.size();
+    }
+    
+    /**
+     * Add library entries *.class
+     */
+    static private void addLibraryClasses( ZipFile lib ) {
+                        
+        Enumeration enum = lib.entries();        
+        String cls = "";        
+        
+        while( enum.hasMoreElements() ) {
+            
+            cls = enum.nextElement().toString();            
+            if( cls.endsWith( ".class" ) ) {
+                classesCollection.add( cls );
+            }
+            
+        }
+        
+    }
+    
+    static public String[] getLibraryClasses( ZipFile lib ) {
+                        
+        Enumeration enum = lib.entries();        
+        String cls = "";        
+        HashSet hset = new HashSet();
+        
+        while( enum.hasMoreElements() ) {
+            
+            cls = enum.nextElement().toString();            
+            if( cls.endsWith( ".class" ) ) {
+                hset.add( cls );
+            }
+            
+        }
+        
+        String[] rvalue = new String[ hset.size() ];
+        Iterator iter = hset.iterator();
+        
+        for( int i = 0 ; iter.hasNext() ; i++ ) {
+            rvalue[i] = (String) iter.next();        
+        }
+        
+        return rvalue;
+    }
+    
+    
+    static public String[] getLibraryPackages( ZipFile lib ) {
+                        
+        //Enumeration enum = lib.entries();        
+        Enumeration enum = lib.entries();
+        String cls = "";        
+        HashSet hset = new HashSet();
+        
+        while( enum.hasMoreElements() ) {
+            
+            //cls = enum.nextElement().toString();            
+            cls = enum.nextElement().toString().trim();            
+            if( cls.endsWith( "/" ) ) {
+                hset.add( cls );
+            }
+            
+        }
+        
+        String[] rvalue = new String[ hset.size() ];
+        Iterator iter = hset.iterator();
+        
+        for( int i = 0 ; iter.hasNext() ; i++ ) {
+            rvalue[i] = (String) iter.next();        
+        }
+        
+        return rvalue;
+    }
+    
+    
+    /**
+     * remove library entries *.class
+     */       
+    private static void removeLibraryClasses( ZipFile lib ) throws java.io.IOException {
+        
+        Enumeration enum = lib.entries();        
+        String cls = "";        
+        
+        while( enum.hasMoreElements() ) {
+            
+            cls = enum.nextElement().toString();            
+            if( cls.endsWith( ".class" ) ) {                
+                classesCollection.remove( cls );
+            }
+            
+        }
+
+    }
+    
+    
+    
+    /**
+     * get field list
+     */
+    public static String[] getFieldList( String jarFile, String javaClass ) throws IOException {
+                          
+        ClassParser cp = new ClassParser(jarFile, javaClass);        
+        JavaClass jc = cp.parse();        
+        Field[] fld = jc.getFields();        
+        String[] rvalue = new String[ fld.length ];
+        
+        for( int i = 0 ; i < fld.length ; i++ ) {
+            rvalue[i] = fld[i].toString();
+        }
+        
+        return rvalue;
+        
+    }
+    
+    
+    /**
+     * get method list
+     */
+    public static String[] getMethodList( String jarFile, String javaClass ) throws IOException {
+                          
+        ClassParser cp = new ClassParser(jarFile, javaClass );        
+        JavaClass jc = cp.parse();                
+        Method[] mthd = jc.getMethods();
+        String[] rvalue = new String[ mthd.length ];
+        
+        for( int i = 0 ; i < mthd.length ; i++ ) {
+            rvalue[i] = mthd[i].toString();
+        }
+        
+        return rvalue;
+    }
+    
+    
+    // compares on on start of class collection
+    public static Vector getSimilarPackageNames( String beginWith ) {
+        
+        Vector rvalue = new Vector();        
+        beginWith = beginWith.replace( '.', '/' );        
+        Iterator iter = classesCollection.iterator();        
+        String temp = "";
+        
+        for( int i = 0 ; iter.hasNext() ; i++ ) {
+            temp = (String) iter.next();
+            if( temp.startsWith( beginWith ) ) {
+                rvalue.add( temp );
+            }            
+        }
+        
+        return rvalue;        
+        
+    }
+    
+    
+    public static Vector getSimilarClassNames( String beginWith ) {
+        
+        Vector rvalue = new Vector();        
+        beginWith = beginWith ;        
+        Iterator iter = classesCollection.iterator();        
+        String temp = "";
+        
+        for( int i = 0 ; iter.hasNext() ; i++ ) {
+            temp = (String) iter.next();
+            temp = temp.substring( temp.lastIndexOf( '/' ) + 1 );
+            if( temp.startsWith( beginWith ) ) {
+                rvalue.add( temp );
+            }            
+        }
+        
+        return rvalue;        
+        
+    }
+    
+    
+}

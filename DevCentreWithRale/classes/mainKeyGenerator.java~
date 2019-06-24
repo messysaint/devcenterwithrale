@@ -1,0 +1,39 @@
+/*
+ * mainKeyGenerator.java
+ *
+ * Created on November 25, 2002, 1:29 PM
+ */
+
+import java.beans.*;
+import sun.misc.*;
+import java.lang.*;
+import java.security.*;
+import java.io.*;
+import javax.crypto.*;
+import javax.crypto.spec.*;
+import java.security.spec.*;
+
+/**
+ *
+ * @author  BMutia
+ */
+public class mainKeyGenerator {
+    
+    /** Creates a new instance of mainKeyGenerator */
+    public mainKeyGenerator() {
+    }
+    
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        
+        // generate static key
+        keyGenerator kgen = new keyGenerator();
+        
+        String staticKey = kgen.generate();
+        
+        System.out.println( "DESede key: " + staticKey );
+    }
+    
+}

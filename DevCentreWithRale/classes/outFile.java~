@@ -1,0 +1,30 @@
+/*
+ * outFile.java
+ *
+ * Created on October 24, 2000, 4:04 PM
+ */
+
+import java.io.*;
+
+/**
+ *
+ * @author  C1BMUTIA
+ * @version 
+ */
+public class outFile extends DataOutputStream {
+
+    /** Creates new outFile */
+    public outFile(String filename) throws IOException {
+        
+        super( new BufferedOutputStream( new FileOutputStream(filename)));
+  
+    }
+
+    //
+    public outFile(File file) throws IOException {
+    
+        this(file.getPath());
+  
+    }
+
+}

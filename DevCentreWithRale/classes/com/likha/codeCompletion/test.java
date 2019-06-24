@@ -1,0 +1,58 @@
+/*
+ * test.java
+ *
+ * Created on June 29, 2003, 2:24 PM
+ */
+
+package com.likha.codeCompletion;
+
+import java.util.*;
+
+/**
+ *
+ * @author  test1
+ */
+public class test {
+    
+    /** Creates a new instance of test */
+    public test() {
+    }
+    
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) throws java.io.IOException {
+        
+        
+        libraryManager lm = new libraryManager();
+        
+        lm.addLibrary( "C:\\j2sdk1.4.1_01\\jre\\lib\\rt.jar" );
+        
+        System.out.println( "Library count:" + lm.getLibraryCollectionSize() + "" );
+        System.out.println( "Classes count:" + lm.getClassesCollectionSize() + "" );
+        
+        String[] libs = lm.listLibraries();
+        for( int i = 0 ; i < libs.length ; i++ ) {
+            System.out.println( "Jar: " + libs[i] );
+        }
+                
+        
+        Vector similar = lm.getSimilarPackageNames( "java/awt/dnd/" );
+        Iterator iter = similar.iterator();                        
+        for( int i = 0 ; iter.hasNext() ; i++ ) {
+            System.out.println( "Package: " + (String) iter.next() );
+            
+        }
+         
+        
+        
+        similar = lm.getSimilarClassNames( "Thread" );
+        iter = similar.iterator();                        
+        for( int i = 0 ; iter.hasNext() ; i++ ) {
+            System.out.println( "Class: " + (String) iter.next() );
+            
+        }
+        
+    }
+    
+}

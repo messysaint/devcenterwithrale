@@ -1,0 +1,260 @@
+/*
+ * weblog.java
+ *
+ * Created on October 23, 2000, 2:17 PM
+ */
+
+
+
+import java.util.*;
+import java.io.*;
+
+/**
+ *
+ * @author  C1BMUTIA
+ * @version 
+ */
+public class weblog extends Object {
+    
+    static Calendar cToday;
+   
+    static String format = new String();
+            
+    static String option = new String();
+    
+    static String[] formatArray = { "mmddyyyy","mmddyy","yyyymmdd","yymmdd"};
+    
+    
+    /** Creates new weblog */
+    public weblog() {
+    }
+
+
+    
+    /**
+    * @param args the command line arguments
+    */
+    public static void main (String args[]) {                
+        
+        if ( args.length != 2) {
+            
+            weblog.helpMessage();
+            
+            System.exit(0);
+            
+        } 
+        
+        
+        option = args[0];
+        
+        format = args[1];
+        
+        
+        if ( option.equals( "backup" ) == false){ 
+            
+            if ( option.equals( "rename" ) == false ) {
+            
+                weblog.helpMessage();
+            
+                System.exit(0);
+            
+            }
+            
+        }
+        
+        
+        if ( format.equals( formatArray[0] ) == false ) {
+            
+            if ( format.equals( formatArray[1] ) == false ) {
+            
+              if ( format.equals( formatArray[2] ) == false ) {
+                
+                if ( format.equals( formatArray[3] ) == false ) {
+                               
+                  weblog.helpMessage();                                            
+                  System.exit(0);
+                  
+                }
+                
+              }
+                
+            }
+            
+        }
+        
+        
+        if ( option.equals( "backup" )){
+            
+            weblog.createBackUp();
+            
+        } else if ( option.equals( "rename" ) ){
+            
+            weblog.renameOnly();
+            
+        } else{
+            
+            weblog.helpMessage();
+                
+            System.exit(0);
+            
+        }
+            
+        
+        
+        
+        
+    }
+    
+    // return string of file names from current directory
+    static String[] logFiles() {
+    
+                
+        String[] list = new String[0];
+        
+        try {
+            
+            File path = new File(".");
+            
+            list = path.list( new filter( weblog.dateString( format )));
+                    
+            
+        } catch(Exception e) {
+            
+            e.printStackTrace();
+            
+        }
+        
+        return list;
+    }
+
+
+    // return a yesterday's date
+    static String dateString( String format ){
+    
+        Integer month;
+        Integer day;
+        Integer year;               
+                
+        String sMonth = new String();
+        String sDay = new String();        
+        String sYear = new String();
+        
+        String returnValue = new String();          
+        
+        TimeZone tz = TimeZone.getTimeZone("GMT-32:00"); // yesterdays timezone         
+        cToday = Calendar.getInstance( tz ); // set yesterday as today        
+        
+        month = new Integer( cToday.get(Calendar.MONTH) + 1 ); // month        
+        day = new Integer( cToday.get(Calendar.DAY_OF_MONTH) ); // day        
+        year = new Integer( cToday.get(Calendar.YEAR) ); // year        
+        
+        sMonth = month.toString();        
+        sMonth = sMonth.length() == 2 ? sMonth : "0" + sMonth;  // check length of string        
+        
+        sDay = day.toString();        
+        sDay = sDay.length() == 2 ? sDay :  "0" + sDay; // check length of string
+        
+        sYear = year.toString();
+        
+        
+        // verify format
+        if ( format.equals( formatArray[0] ) ) {            
+          
+            returnValue =   sMonth + sDay + sYear;                   
+            
+        } else if ( format.equals( formatArray[1] ) ) {            
+          
+            sYear = sYear.substring( 2, 3 );
+            returnValue =   sMonth + sDay + sYear; 
+            
+        } else if ( format.equals( formatArray[2] ) ) {        
+          
+            returnValue =   sYear + sMonth + sDay;            
+            
+        } else if  ( format.equals( formatArray[3] ) ) {
+          
+            sYear = sYear.substring( 2, 3 );
+            returnValue =   sYear + sMonth + sDay;            
+            
+        } else {            
+          
+          // to ease my paranoia!
+          System.out.println( "Error in date format" );            
+            
+        }
+        
+        return returnValue;
+
+        
+    }
+
+    
+    // creates a backup copy of file 
+    static void createBackUp(){
+        
+        String[] s = weblog.logFiles();
+        
+        for( int i = 0 ; i < s.length ; i++){
+            
+            //System.out.println( s[i] );
+            
+            weblogReader wlR = new weblogReader( s[i] );
+            
+            wlR.readData();
+            
+        }
+        
+    }
+    
+    // renames the log file  to <filename>.bak
+    static void renameOnly(){
+        
+        String[] s = weblog.logFiles();
+        
+        for( int i = 0 ; i < s.length ; i++){
+            
+            System.out.println( "Renaming: " + s[i] );
+            
+            File logFile = new File( s[i] );
+            
+            if ( logFile.renameTo( new File( s[i] + ".bak" )) ) {
+                
+                System.out.println( "OK" );
+                
+            } else{
+                
+                System.out.println( "Error renaming file" );
+                
+            }
+            
+        }
+        
+    }
+    
+    
+    // display help message
+    
+    static void helpMessage(){
+        
+        System.out.println( "Usage: java -jar weblog <option>" + '\n' );
+            
+        System.out.println( "options are:" + '\n' );
+            
+        System.out.println( "backup - this will make a backup copy of the log file" );
+            
+        System.out.println( "rename - this will just rename the log file to *.bak" + '\n' );
+            
+        System.out.println( "formats are:" + '\n' );
+            
+        System.out.println( "mmddyyyy - month day year" );
+            
+        System.out.println( "yyyymmdd - year month day" );
+        
+        System.out.println( "mmddyy   - month day year" );
+        
+        System.out.println( "yymmdd   - year month day" );
+        
+    }
+    
+    
+}

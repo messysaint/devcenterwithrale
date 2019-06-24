@@ -1,0 +1,186 @@
+/*
+ * weblogReader.java
+ *
+ * Created on October 24, 2000, 3:14 PM
+ */
+
+import java.io.*;
+import java.util.*;
+
+import encryptor.*;
+
+/**
+ *
+ * @author  C1BMUTIA
+ * @version
+ */
+public class clientSetting extends Object {
+    
+    
+    DataInputStream in;
+    String clientProperties;
+    
+    // SSH Server connection settings:
+    String sshServerName = new String();
+    int sshPort = 22;
+    String sshRemoteDirectory = "";
+    String sshUserName = new String();
+    String sshPassword = new String();
+    
+    // Likha Remote Loader connection settings:
+    int loaderPort = 9002;
+    String loaderUserName = new String();
+    String loaderPassword = new String();
+    String key = null;
+    
+    DESedeEncryptor psec; 
+    
+    // class constructor
+    public clientSetting( String fileName ) {
+        clientProperties = fileName;
+        psec = new DESedeEncryptor();
+    }
+    
+    public boolean exists() {
+        File setting = new File( clientProperties );
+        return setting.exists()? true : false;
+    }
+    
+    public String getServerName() {
+        return sshServerName;         
+    }
+    
+    public int getSSHPort() {               
+        return sshPort; 
+    }
+    
+    public String getSSHUserName() {        
+        return sshUserName;
+    }
+    
+    public String getSSHPassword() {        
+        return sshPassword;
+    }
+            
+    public String getSSHRemoteDirectory() {        
+        return sshRemoteDirectory; 
+    }
+    
+    public int getReloadPort() {                
+        return loaderPort;
+    }
+    
+    public String getLoaderUserName() {        
+        return loaderUserName;
+    }
+    
+    public String getLoaderPassword() {        
+        return loaderPassword;
+    }
+    
+    // read data
+    public boolean readSetting() {
+        
+        boolean rvalue = true;
+        String s = new String();
+        int keyLen = 32;
+        
+        try {
+            in = new DataInputStream( new BufferedInputStream( new FileInputStream( clientProperties ) ) );
+            try {
+                while( (s = in.readLine())!= null ) {
+                    if( s.toUpperCase().indexOf( "SSHSERVERHOST" ) != -1 ) {                        
+                        sshServerName = s.substring( s.indexOf( '=')+1, s.length() ).trim();
+                        key = sshServerName.substring(0, keyLen);
+                        sshServerName = sshServerName.substring(keyLen);
+                        sshServerName = psec.decryptFromBase64( sshServerName, key );
+                    } else if( s.toUpperCase().indexOf( "SSHPORT" ) != -1 ) {
+                        String port = s.substring( s.indexOf( '=')+1, s.length() ).trim();
+                        key = port.substring(0, keyLen);
+                        port = port.substring(keyLen);
+                        sshPort = new Integer( psec.decryptFromBase64( port, key ) ).intValue();
+                    } else if( s.toUpperCase().indexOf( "SSHREMOTEDIRECTORY" ) != -1 ) {                        
+                        sshRemoteDirectory = s.substring( s.indexOf( '=')+1, s.length() ).trim();
+                        key = sshRemoteDirectory.substring(0, keyLen);
+                        sshRemoteDirectory = sshRemoteDirectory.substring(keyLen);
+                        sshRemoteDirectory = psec.decryptFromBase64( sshRemoteDirectory, key );
+                    } else if( s.toUpperCase().indexOf( "SSHUSERNAME" ) != -1 ) {
+                        sshUserName = s.substring( s.indexOf( '=')+1, s.length() ).trim();
+                        key = sshUserName.substring(0, keyLen);
+                        sshUserName = sshUserName.substring(keyLen);
+                        sshUserName = psec.decryptFromBase64( sshUserName, key );
+                    }  else if( s.toUpperCase().indexOf( "SSHPASSWORD" ) != -1 ) {
+                        sshPassword = s.substring( s.indexOf( '=')+1, s.length() ).trim();
+                        key = sshPassword.substring(0, keyLen);
+                        sshPassword = sshPassword.substring(keyLen);
+                        sshPassword = psec.decryptFromBase64( sshPassword, key );
+                    } else if( s.toUpperCase().indexOf( "LOADERPORT" ) != -1 ) {
+                        String port  = s.substring( s.indexOf( '=')+1, s.length() ).trim();
+                        key = port.substring(0, keyLen);
+                        port = port.substring(keyLen);
+                        loaderPort  = new Integer( psec.decryptFromBase64( port, key ) ).intValue();
+                    } else if( s.toUpperCase().indexOf( "LOADERUSERNAME" ) != -1 ) {
+                        loaderUserName = s.substring( s.indexOf( '=')+1, s.length() ).trim();
+                        key = loaderUserName.substring(0, keyLen);
+                        loaderUserName = loaderUserName.substring(keyLen);
+                        loaderUserName = psec.decryptFromBase64( loaderUserName, key );
+                    } else if( s.toUpperCase().indexOf( "LOADERPASSWORD" ) != -1 ) {
+                        loaderPassword = s.substring( s.indexOf( '=')+1, s.length() ).trim();
+                        key = loaderPassword.substring(0, keyLen);
+                        loaderPassword = loaderPassword.substring(keyLen);
+                        loaderPassword = psec.decryptFromBase64( loaderPassword, key );
+                    }
+                }
+                
+                try {
+                    in.close();
+                } catch( IOException e ){
+                    rvalue = false;
+                }
+            } catch( IOException e){
+                rvalue = false;
+            }
+            
+        } catch( IOException e) {
+            rvalue = false;
+        }               
+        
+        return rvalue;
+        
+    }
+    
+    
+    // inner class
+    class outFile extends DataOutputStream {
+        
+        public outFile( String filename ) throws IOException {
+            super( new BufferedOutputStream( new FileOutputStream( filename ) ) );
+        }
+        
+        public outFile(File file) throws IOException {
+            this(file.getPath());
+        }
+        
+    }
+    
+    
+    // inner class
+    class filter extends Object implements FilenameFilter {
+        
+        String afn;
+        
+        public filter( String afn ) {
+            this.afn = afn;
+        }
+        
+        public boolean accept(File dir, String name) {
+            // Strip path information:
+            String f = new File(name).getName();
+            return f.indexOf(afn) != -1;
+        }
+        
+    }
+    
+    
+    
+}

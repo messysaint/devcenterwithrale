@@ -1,0 +1,31 @@
+/*
+ * myRunTime.java
+ *
+ * Created on December 15, 2002, 5:05 PM
+ */
+
+/**
+ *
+ * @author  test1
+ */
+public class myRuntime extends java.lang.Runtime implements Runnable {
+    
+    /** Creates a new instance of myRunTime */
+    Thread thread = new Thread( this );
+    
+    
+    
+    public void run() {
+        
+        while( true ) {
+            while( true ) {
+            try {         
+                thread.sleep( 1000 );
+            } catch( InterruptedException ie ) {
+            }
+        }
+        }
+        
+    }
+    
+}
